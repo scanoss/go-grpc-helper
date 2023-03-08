@@ -27,57 +27,46 @@ import (
 	"bufio"
 	"errors"
 	"fmt"
-	"go.uber.org/zap"
 	"os"
 	"strings"
+
+	zlog "github.com/scanoss/zap-logging-helper/pkg/logger"
 )
 
 // checkFile validates if the given file exists or not.
-func checkFile(filename string) (bool, error) {
+func checkFile(filename string) error {
 	if len(filename) == 0 {
-		return false, fmt.Errorf("no file specified to check")
+		return fmt.Errorf("no file specified to check")
 	}
 	fileDetails, err := os.Stat(filename)
 	if err != nil {
 		if errors.Is(err, os.ErrNotExist) {
-			return false, fmt.Errorf("file doest no exist")
+			return fmt.Errorf("file doest no exist")
 		}
-		return false, err
+		return err
 	}
 	if fileDetails.IsDir() {
-		return false, fmt.Errorf("is a directory and not a file")
+		return fmt.Errorf("is a directory and not a file")
 	}
 	if fileDetails.Size() == 0 {
-		return false, fmt.Errorf("specified file is empty")
+		return fmt.Errorf("specified file is empty")
 	}
-	return true, nil
+	return nil
 }
 
 // CheckTLS tests if TLS should be enabled or not.
-func CheckTLS(certFile, keyFile string, s *zap.SugaredLogger) (bool, error) {
+func CheckTLS(certFile, keyFile string) (bool, error) {
 	var startTLS = false
 	if len(certFile) > 0 && len(keyFile) > 0 {
-		cf, err := checkFile(certFile)
-		if err != nil || !cf {
-			if err != nil {
-				return false, err
-			} else {
-				if s != nil {
-					s.Errorf("Cert file is not accessible: %v", certFile)
-				}
-				return false, fmt.Errorf("cert file not accesible: %v", certFile)
-			}
+		err := checkFile(certFile)
+		if err != nil {
+			zlog.S.Errorf("Cert file is not accessible: %v", keyFile)
+			return false, err
 		}
-		kf, err := checkFile(keyFile)
-		if err != nil || !kf {
-			if s != nil {
-				s.Errorf("Key file is not accessible: %v", keyFile)
-			}
-			if err != nil {
-				return false, err
-			} else {
-				return false, fmt.Errorf("key file not accesible: %v", keyFile)
-			}
+		err = checkFile(keyFile)
+		if err != nil {
+			zlog.S.Errorf("Key file is not accessible: %v", keyFile)
+			return false, err
 		}
 		startTLS = true
 	}
@@ -85,66 +74,35 @@ func CheckTLS(certFile, keyFile string, s *zap.SugaredLogger) (bool, error) {
 }
 
 // LoadFiltering loads the IP filtering options if available.
-func LoadFiltering(allowListFile, denyListFile string, s *zap.SugaredLogger) ([]string, []string, error) {
-	allowedIPs, err := loadListFile(allowListFile, "allow", s)
-	if err != nil {
-		return nil, nil, err
+func LoadFiltering(allowListFile, denyListFile string) ([]string, []string, error) {
+	// load the 'allow' list details
+	var allowedIPs []string
+	var deniedIPs []string
+	var err error
+	if len(allowListFile) > 0 {
+		allowedIPs, err = loadListFile(allowListFile, "allow")
+		if err != nil {
+			return nil, nil, err
+		}
 	}
-	deniedIPs, err := loadListFile(denyListFile, "deny", s)
-	if err != nil {
-		return nil, nil, err
+	// load the 'deny' list details
+	if len(denyListFile) > 0 {
+		deniedIPs, err = loadListFile(denyListFile, "deny")
+		if err != nil {
+			return nil, nil, err
+		}
 	}
-	//var allowedIPs []string
-	//if len(allowListFile) > 0 {
-	//	cf, err := checkFile(allowListFile)
-	//	if err != nil || !cf {
-	//		if s != nil {
-	//			s.Errorf("Allow List file is not accessible: %v", allowListFile)
-	//		}
-	//		if err != nil {
-	//			return nil, nil, err
-	//		} else {
-	//			return nil, nil, fmt.Errorf("allow list file not accesible: %v", allowListFile)
-	//		}
-	//	}
-	//	allowedIPs, err = LoadFile(allowListFile)
-	//	if err != nil {
-	//		return nil, nil, err
-	//	}
-	//}
-	//var deniedIPs []string
-	//if len(config.Filtering.DenyListFile) > 0 {
-	//	cf, err := checkFile(config.Filtering.DenyListFile)
-	//	if err != nil || !cf {
-	//		zlog.S.Errorf("Deny List file is not accessible: %v", config.Filtering.DenyListFile)
-	//		if err != nil {
-	//			return nil, nil, err
-	//		} else {
-	//			return nil, nil, fmt.Errorf("deny list file not accesible: %v", config.Filtering.DenyListFile)
-	//		}
-	//	}
-	//	deniedIPs, err = LoadFile(config.Filtering.DenyListFile)
-	//	if err != nil {
-	//		return nil, nil, err
-	//	}
-	//}
 	return allowedIPs, deniedIPs, nil
 }
 
 // loadListFile loads the given file, parses it and returns its contents in a string array.
-func loadListFile(listFile, name string, s *zap.SugaredLogger) ([]string, error) {
+func loadListFile(listFile, name string) ([]string, error) {
 	var listFileContents []string
 	if len(listFile) > 0 {
-		cf, err := checkFile(listFile)
-		if err != nil || !cf {
-			if s != nil {
-				s.Errorf("%s List file is not accessible: %v", name, listFile)
-			}
-			if err != nil {
-				return nil, err
-			} else {
-				return nil, fmt.Errorf("%s list file not accesible: %v", name, listFile)
-			}
+		err := checkFile(listFile)
+		if err != nil {
+			zlog.S.Errorf("%s List file is not accessible: %v", name, listFile)
+			return nil, err
 		}
 		listFileContents, err = LoadFile(listFile)
 		if err != nil {
