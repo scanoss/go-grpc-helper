@@ -35,8 +35,8 @@ import (
 
 	grpcmiddleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	grpczap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
-	"github.com/jpillora/ipfilter"
 	"github.com/scanoss/go-grpc-helper/pkg/grpc/utils"
+	"github.com/scanoss/ipfilter/v2"
 	"github.com/scanoss/zap-logging-helper/pkg/grpc/interceptor"
 	zlog "github.com/scanoss/zap-logging-helper/pkg/logger"
 	"golang.org/x/net/context"

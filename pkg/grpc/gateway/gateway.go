@@ -30,8 +30,8 @@ import (
 	"time"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
-	"github.com/jpillora/ipfilter"
 	"github.com/scanoss/go-grpc-helper/pkg/grpc/utils"
+	"github.com/scanoss/ipfilter/v2"
 	zlog "github.com/scanoss/zap-logging-helper/pkg/logger"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"

@@ -3,6 +3,9 @@ Welcome to the SCANOSS Platform 2.0 gRPC server helper package.
 
 This package contains helper functions to make development of Go gRPC services easier to configure.
 
+[![Go Unit Test](https://github.com/scanoss/go-grpc-helper/actions/workflows/go-ci.yml/badge.svg)](https://github.com/scanoss/go-grpc-helper/actions/workflows/go-ci.yml)
+[![Golang CI Lint](https://github.com/scanoss/go-grpc-helper/actions/workflows/golangci-lint.yml/badge.svg)](https://github.com/scanoss/go-grpc-helper/actions/workflows/golangci-lint.yml)
+
 ## Repository Structure
 This repository is made up of the following components:
 * [File manipulation](pkg/files/files.go)
