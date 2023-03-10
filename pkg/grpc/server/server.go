@@ -44,7 +44,7 @@ import (
 	"google.golang.org/grpc/credentials"
 )
 
-// SetupGrpcServer configures the port, filtering & logging interceptors for a gRPC Server
+// SetupGrpcServer configures the port, filtering & logging interceptors for a gRPC Server.
 func SetupGrpcServer(port, tlsCertFile, tlsKeyFile string, allowedIPs, deniedIPs []string, startTLS, blockedByDefault,
 	trustProxy bool) (net.Listener, *grpc.Server, error) {
 	port = utils.SetupPort(port)
@@ -78,7 +78,7 @@ func SetupGrpcServer(port, tlsCertFile, tlsKeyFile string, allowedIPs, deniedIPs
 	return listen, server, nil
 }
 
-// StartGrpcServer starts the given gRPC server on the specified listener
+// StartGrpcServer starts the given gRPC server on the specified listener.
 func StartGrpcServer(listen net.Listener, server *grpc.Server, startTLS bool) {
 	withTLS := ""
 	if startTLS {
@@ -91,7 +91,7 @@ func StartGrpcServer(listen net.Listener, server *grpc.Server, startTLS bool) {
 	}
 }
 
-// WaitServerComplete waits for a signal to terminate the
+// WaitServerComplete waits for a signal (interrupt) to terminate the give services.
 func WaitServerComplete(srv *http.Server, server *grpc.Server) error {
 	// graceful shutdown
 	c := make(chan os.Signal, 1)
