@@ -3,7 +3,7 @@ module github.com/scanoss/go-grpc-helper
 go 1.17
 
 require (
-	github.com/grpc-ecosystem/go-grpc-middleware v1.3.0
+	github.com/grpc-ecosystem/go-grpc-middleware v1.4.0
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.15.2
 	github.com/jmoiron/sqlx v1.3.5
 	github.com/lib/pq v1.10.7
