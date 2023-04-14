@@ -12,7 +12,7 @@ require (
 	github.com/scanoss/zap-logging-helper v0.1.1
 	github.com/stretchr/testify v1.8.2
 	golang.org/x/net v0.8.0
-	google.golang.org/grpc v1.53.0
+	google.golang.org/grpc v1.54.0
 )
 
 //replace github.com/scanoss/ipfilter => ../../../oss/ipfilter
