@@ -589,8 +589,8 @@ github.com/rogpeppe/fastuuid v1.2.0/go.mod h1:jVj6XXZzXRy/MSR5jhDC/2q6DgLz+nrA6L
 github.com/rogpeppe/go-internal v1.3.0/go.mod h1:M8bDsm7K2OlrFYOpmOWEs/qY81heoFRclV5y23lUDJ4=
 github.com/scanoss/ipfilter/v2 v2.0.2 h1:GaB9i8kVJg9JQZm5XGStYkEpiaCVdsrj7ezI2wV/oh8=
 github.com/scanoss/ipfilter/v2 v2.0.2/go.mod h1:AwrpX4XGbZ7EKISMi1d6E5csBk1nWB8+ugpvXHFcTpA=
-github.com/scanoss/zap-logging-helper v0.1.2 h1:RxvZCGv1y+khflRrRq+Wh71EMK3xHcN9VPB41U9GLzw=
-github.com/scanoss/zap-logging-helper v0.1.2/go.mod h1:Uj9l7qxGYIk9p5YqVEssHUjTFCRt9QgGHBWRFxXRiDw=
+github.com/scanoss/zap-logging-helper v0.2.0 h1:r1HM/lalRZkkZU/3RQoIQJmZtzWsoAQr6Eqy/FRxWR8=
+github.com/scanoss/zap-logging-helper v0.2.0/go.mod h1:5AGYjct4soPR/1wGE5AmL2M7sgCcOSlnWrTliF5d2Xw=
 github.com/sirupsen/logrus v1.4.2/go.mod h1:tLMulIdttU9McNUspp0xgXVQah82FyeX6MwdIuYE2rE=
 github.com/spaolacci/murmur3 v0.0.0-20180118202830-f09979ecbc72/go.mod h1:JwIasOWyU6f++ZhiEuf87xNszmSA2myDM2Kzu9HwQUA=
 github.com/spf13/afero v1.3.3/go.mod h1:5KUK8ByomD5Ti5Artl0RtHeI5pTF7MIDuXL3yY520V4=
