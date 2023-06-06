@@ -12,14 +12,14 @@ require (
 	github.com/scanoss/zap-logging-helper v0.2.0
 	github.com/stretchr/testify v1.8.4
 	golang.org/x/net v0.10.0
-	google.golang.org/grpc v1.54.0
+	google.golang.org/grpc v1.55.0
 )
 
 //replace github.com/scanoss/ipfilter => ../../../oss/ipfilter
 
 require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
-	github.com/golang/protobuf v1.5.2 // indirect
+	github.com/golang/protobuf v1.5.3 // indirect
 	github.com/google/uuid v1.3.0 // indirect
 	github.com/phuslu/iploc v1.0.20230201 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
@@ -29,7 +29,7 @@ require (
 	go.uber.org/zap v1.24.0 // indirect
 	golang.org/x/sys v0.8.0 // indirect
 	golang.org/x/text v0.9.0 // indirect
-	google.golang.org/genproto v0.0.0-20230223222841-637eb2293923 // indirect
-	google.golang.org/protobuf v1.28.1 // indirect
+	google.golang.org/genproto v0.0.0-20230306155012-7f2fa6fef1f4 // indirect
+	google.golang.org/protobuf v1.30.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
