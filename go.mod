@@ -1,6 +1,6 @@
 module github.com/scanoss/go-grpc-helper
 
-go 1.17
+go 1.19
 
 require (
 	github.com/grpc-ecosystem/go-grpc-middleware v1.4.0
