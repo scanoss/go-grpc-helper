@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Upcoming changes...
 
+## [0.2.0] - 2023-11-20
+### Added
+- Added Open Telemetry (OTEL) export support
+- Upgraded to Go 1.20
+
 
 ## [0.1.0] - 2023-03-08
 ### Added
@@ -18,3 +23,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added HTTP/REST gateway helper
 
 [0.1.0]: https://github.com/scanoss/go-grpc-helper/compare/v0.0.0...v0.1.0
+[0.2.0]: https://github.com/scanoss/go-grpc-helper/compare/v0.1.0...v0.2.0

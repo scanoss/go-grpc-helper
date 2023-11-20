@@ -33,6 +33,8 @@ import (
 	"syscall"
 	"time"
 
+	"go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
+
 	grpcmiddleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	grpczap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
 	"github.com/scanoss/go-grpc-helper/pkg/grpc/utils"
@@ -46,7 +48,7 @@ import (
 
 // SetupGrpcServer configures the port, filtering & logging interceptors for a gRPC Server.
 func SetupGrpcServer(port, tlsCertFile, tlsKeyFile string, allowedIPs, deniedIPs []string, startTLS, blockedByDefault,
-	trustProxy bool) (net.Listener, *grpc.Server, error) {
+	trustProxy, telemetry bool) (net.Listener, *grpc.Server, error) {
 	port = utils.SetupPort(port)
 	listen, err := net.Listen("tcp", port)
 	if err != nil {
@@ -70,6 +72,9 @@ func SetupGrpcServer(port, tlsCertFile, tlsKeyFile string, allowedIPs, deniedIPs
 			return nil, nil, fmt.Errorf("failed to load TLS credentials from file")
 		}
 		opts = append(opts, grpc.Creds(creds))
+	}
+	if telemetry {
+		opts = append(opts, grpc.StatsHandler(otelgrpc.NewServerHandler()))
 	}
 	opts = append(opts, grpc.UnaryInterceptor(grpcmiddleware.ChainUnaryServer(interceptors...)))
 	// register service

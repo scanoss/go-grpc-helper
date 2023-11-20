@@ -30,6 +30,8 @@ import (
 	"testing"
 	"time"
 
+	"github.com/scanoss/go-grpc-helper/pkg/grpc/otel"
+
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	zlog "github.com/scanoss/zap-logging-helper/pkg/logger"
 )
@@ -43,7 +45,7 @@ func TestSetupGrpcServerNoTLS(t *testing.T) {
 	allowedIPs := []string{"127.0.0.1"}
 	deniedIPs := []string{"192.168.0.1"}
 
-	listen, server, err := SetupGrpcServer(":0", "", "", allowedIPs, deniedIPs, false, true, false)
+	listen, server, err := SetupGrpcServer(":0", "", "", allowedIPs, deniedIPs, false, true, false, false)
 	if err != nil {
 		t.Errorf("Unexpected error: %v", err)
 	}
@@ -64,7 +66,7 @@ func TestSetupGrpcServerWithTLS(t *testing.T) {
 	defer zlog.SyncZap()
 	allowedIPs := []string{"127.0.0.1"}
 	deniedIPs := []string{"192.168.0.1"}
-	listen, server, err := SetupGrpcServer(":0", "../../../tests/server.crt", "../../../tests/server.key", allowedIPs, deniedIPs, true, true, false)
+	listen, server, err := SetupGrpcServer(":0", "../../../tests/server.crt", "../../../tests/server.key", allowedIPs, deniedIPs, true, true, false, false)
 	if err != nil {
 		t.Errorf("Unexpected error: %v", err)
 	}
@@ -84,7 +86,7 @@ func TestSetupGrpcServerNoTLSShutdown(t *testing.T) {
 	defer zlog.SyncZap()
 	allowedIPs := []string{"127.0.0.1"}
 	deniedIPs := []string{"192.168.0.1"}
-	listen, server, err := SetupGrpcServer(":0", "", "", allowedIPs, deniedIPs, false, true, false)
+	listen, server, err := SetupGrpcServer(":0", "", "", allowedIPs, deniedIPs, false, true, false, false)
 	if err != nil {
 		t.Errorf("Unexpected error: %v", err)
 	}
@@ -117,4 +119,31 @@ func TestSetupGrpcServerNoTLSShutdown(t *testing.T) {
 	if err != nil {
 		t.Errorf("Unexpected error: %v", err)
 	}
+}
+
+func TestSetupGrpcServerNoTLSTelemetry(t *testing.T) {
+	err := zlog.NewSugaredDevLogger()
+	if err != nil {
+		t.Fatalf("an error '%s' was not expected when opening a sugared logger", err)
+	}
+	defer zlog.SyncZap()
+	allowedIPs := []string{"127.0.0.1"}
+	deniedIPs := []string{"192.168.0.1"}
+
+	otelShutdown, err := otel.InitTelemetryProviders("go-grpc-helper", "go-grpc", "0.0.1", "0.0.0.0:4317", otel.GetTraceSampler("dev"))
+	if err != nil {
+		t.Errorf("Unexpected error: %v", err)
+	}
+	listen, server, err := SetupGrpcServer(":0", "", "", allowedIPs, deniedIPs, false, true, false, true)
+	if err != nil {
+		t.Errorf("Unexpected error: %v", err)
+	}
+	fmt.Printf("Listening on %v\n", listen.Addr().String())
+
+	go func() {
+		time.Sleep(3 * time.Second)
+		server.GracefulStop()
+	}()
+	StartGrpcServer(listen, server, false)
+	otelShutdown()
 }
