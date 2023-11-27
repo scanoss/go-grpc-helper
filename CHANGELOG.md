@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Upcoming changes...
 
+## [0.3.0] - 2023-11-27
+### Added
+- Added SQL query tracing support
+
 ## [0.2.0] - 2023-11-20
 ### Added
 - Added Open Telemetry (OTEL) export support
@@ -24,3 +28,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 [0.1.0]: https://github.com/scanoss/go-grpc-helper/compare/v0.0.0...v0.1.0
 [0.2.0]: https://github.com/scanoss/go-grpc-helper/compare/v0.1.0...v0.2.0
+[0.3.0]: https://github.com/scanoss/go-grpc-helper/compare/v0.2.0...v0.3.0
