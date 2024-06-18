@@ -13,7 +13,7 @@ func TestSetupTelemetry(t *testing.T) {
 	}
 	defer zlog.SyncZap()
 
-	oltpShutdown, err := InitTelemetryProviders("go-grpc-helper", "go-grpc", "0.0.1", "0.0.0.0:4317", GetTraceSampler("dev"))
+	oltpShutdown, err := InitTelemetryProviders("go-grpc-helper", "go-grpc", "0.0.1", "0.0.0.0:4317", GetTraceSampler("dev"), true)
 	if err != nil {
 		t.Errorf("Unexpected error: %v", err)
 	}
