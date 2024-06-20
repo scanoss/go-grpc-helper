@@ -43,22 +43,26 @@ import (
 )
 
 // InitTelemetryProviders sets up the OLTP Meter and Trace providers and the OLTP gRPC exporter.
-func InitTelemetryProviders(serviceName, serviceNamespace, version, oltpExporter string, traceSampler sdktrace.Sampler) (func(), error) {
+func InitTelemetryProviders(serviceName, serviceNamespace, version, oltpExporter string, traceSampler sdktrace.Sampler, extraAttributes bool) (func(), error) {
 	zlog.L.Info("Setting up Open Telemetry providers.")
 	// Setup resource for the providers
 	ctx := context.Background()
-	res, err := resource.New(ctx,
-		resource.WithFromEnv(),
-		resource.WithProcess(),
-		resource.WithTelemetrySDK(),
-		resource.WithHost(),
-		resource.WithAttributes(
-			// the service name & version used to display traces in backends
-			semconv.ServiceName(serviceName),
-			semconv.ServiceNamespace(serviceNamespace),
-			semconv.ServiceVersion(strings.TrimSpace(version)),
-		),
+	var opts []resource.Option
+	// Extra service level attributes to report
+	if extraAttributes {
+		opts = append(opts, resource.WithFromEnv())
+		opts = append(opts, resource.WithProcess())
+		opts = append(opts, resource.WithTelemetrySDK())
+	}
+	opts = append(opts, resource.WithHost())
+	// the service name & version used to display traces in backends
+	opts = append(opts, resource.WithAttributes(
+		semconv.ServiceName(serviceName),
+		semconv.ServiceNamespace(serviceNamespace),
+		semconv.ServiceVersion(strings.TrimSpace(version)),
+	),
 	)
+	res, err := resource.New(ctx, opts...)
 	if err != nil {
 		zlog.S.Errorf("Failed to create oltp resource: %v", err)
 		return nil, err

@@ -130,7 +130,7 @@ func TestSetupGrpcServerNoTLSTelemetry(t *testing.T) {
 	allowedIPs := []string{"127.0.0.1"}
 	deniedIPs := []string{"192.168.0.1"}
 
-	otelShutdown, err := otel.InitTelemetryProviders("go-grpc-helper", "go-grpc", "0.0.1", "0.0.0.0:4317", otel.GetTraceSampler("dev"))
+	otelShutdown, err := otel.InitTelemetryProviders("go-grpc-helper", "go-grpc", "0.0.1", "0.0.0.0:4317", otel.GetTraceSampler("dev"), true)
 	if err != nil {
 		t.Errorf("Unexpected error: %v", err)
 	}
