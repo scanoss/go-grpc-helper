@@ -21,6 +21,7 @@
  * THE SOFTWARE.
  */
 
+// Package files provides some utilities for checking and loading files into memory
 package files
 
 import (
