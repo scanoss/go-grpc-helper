@@ -53,15 +53,24 @@ func TestQuerySQLite(t *testing.T) {
 	db.MustExec("CREATE TABLE person (firstname text, lastname text)")
 	db.MustExec("INSERT INTO person (firstname, lastname) VALUES ('harry', 'potter')")
 	ctx := context.Background()
+
+	q1 := NewDBSelectContext(zlog.S, db, nil, true)
+	var results1 []Persons
+	err = q1.SelectContext(ctx, &results1, "SELECT * FROM person where firstname = $1", "harry")
+	if err != nil {
+		t.Errorf("Unexpected error: %v", err)
+	}
+	fmt.Printf("Results1: %v\n", results1)
+
 	conn, err := db.Connx(ctx)
 	if err != nil {
 		t.Errorf("Unexpected error: %v", err)
 	}
-	q := NewDBSelectContext(zlog.S, conn, true)
-	var results []Persons
-	err = q.SelectContext(ctx, &results, "SELECT * FROM person where firstname = $1", "harry")
+	q2 := NewDBSelectContext(zlog.S, db, conn, true)
+	var results2 []Persons
+	err = q2.SelectContext(ctx, &results2, "SELECT * FROM person where firstname = $1", "harry")
 	if err != nil {
 		t.Errorf("Unexpected error: %v", err)
 	}
-	fmt.Printf("Results: %v\n", results)
+	fmt.Printf("Results2: %v\n", results2)
 }
