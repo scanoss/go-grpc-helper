@@ -134,5 +134,4 @@ func TestGetILikeOperator(t *testing.T) {
 		t.Errorf("Expected 'ILIKE' but got %s", likeOperator)
 	}
 	fmt.Printf("Postgres like operator is %s\n", likeOperator)
-
 }
