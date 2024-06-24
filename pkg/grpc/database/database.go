@@ -84,3 +84,21 @@ func CloseSQLConnection(conn *sqlx.Conn) {
 		}
 	}
 }
+
+// GetLikeOperator attempts to determine the case-insensitive like operator based on the DB driver
+func GetLikeOperator(db *sqlx.DB) string {
+	if db != nil {
+		driverName := db.DriverName()
+		if driverName == "postgres" {
+			return "ILIKE" // Return the postgres case-insensitive like operator
+		} else if driverName == "sqlite3" {
+			return "LIKE"
+		} else {
+			zlog.S.Warnf("DriverName %s is unkown. Defaulting to LIKE", driverName)
+		}
+	} else {
+		zlog.L.Warn("No DB object supplied. Defaulting to LIKE.")
+	}
+	// Return the default like operator
+	return "LIKE"
+}

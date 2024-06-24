@@ -24,6 +24,7 @@
 package database
 
 import (
+	"fmt"
 	"testing"
 
 	_ "github.com/lib/pq"
@@ -97,4 +98,41 @@ func TestCloseSQLConnection(t *testing.T) {
 	}
 	CloseSQLConnection(conn) // should pass first time
 	CloseSQLConnection(conn) // should fail second time
+}
+
+func TestGetILikeOperator(t *testing.T) {
+	err := zlog.NewSugaredDevLogger()
+	if err != nil {
+		t.Fatalf("an error '%s' was not expected when opening a sugared logger", err)
+	}
+	defer zlog.SyncZap()
+
+	likeOperator := GetLikeOperator(nil)
+	if likeOperator != "LIKE" {
+		t.Errorf("Expected 'LIKE' but got %s", likeOperator)
+	}
+	db, err := OpenDBConnection(":memory:", "sqlite3", "", "", "", "", "")
+	if err != nil {
+		t.Errorf("Unexpected error: %v", err)
+	}
+	defer CloseDBConnection(db)
+
+	likeOperator = GetLikeOperator(db)
+	if likeOperator != "LIKE" {
+		t.Errorf("Expected 'LIKE' but got %s", likeOperator)
+	}
+	fmt.Printf("SQLite like operator is %s\n", likeOperator)
+
+	db, err = OpenDBConnection("", "postgres", "", "", "", "", "")
+	if err != nil {
+		t.Errorf("Unexpected error: %v", err)
+	}
+	defer CloseDBConnection(db)
+
+	likeOperator = GetLikeOperator(db)
+	if likeOperator != "ILIKE" {
+		t.Errorf("Expected 'ILIKE' but got %s", likeOperator)
+	}
+	fmt.Printf("Postgres like operator is %s\n", likeOperator)
+
 }
