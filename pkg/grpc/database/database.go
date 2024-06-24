@@ -31,6 +31,8 @@ import (
 	zlog "github.com/scanoss/zap-logging-helper/pkg/logger"
 )
 
+var defaultLike = "LIKE"
+
 // OpenDBConnection establishes a connection specified database.
 func OpenDBConnection(dsn, driver, user, passwd, host, schema, sslMode string) (*sqlx.DB, error) {
 	if len(dsn) == 0 {
@@ -83,4 +85,22 @@ func CloseSQLConnection(conn *sqlx.Conn) {
 			zlog.S.Warnf("Warning: Problem closing database connection: %v", err)
 		}
 	}
+}
+
+// GetLikeOperator attempts to determine the case-insensitive like operator based on the DB driver.
+func GetLikeOperator(db *sqlx.DB) string {
+	if db != nil {
+		driverName := db.DriverName()
+		switch driverName {
+		case "postgres":
+			return "ILIKE"
+		case "sqlite3":
+			return defaultLike
+		}
+		zlog.S.Warnf("DriverName %s is unkown. Defaulting to %s", driverName, defaultLike)
+	} else {
+		zlog.S.Warnf("No DB object supplied. Defaulting to %s.", defaultLike)
+	}
+	// Return the default like operator
+	return defaultLike
 }
