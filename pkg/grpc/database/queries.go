@@ -34,14 +34,15 @@ import (
 var sqlRegex = regexp.MustCompile(`\$\d+`) // regex to check for SQL parameters
 
 type DBQueryContext struct {
+	db    *sqlx.DB
 	conn  *sqlx.Conn
 	s     *zap.SugaredLogger
 	trace bool
 }
 
 // NewDBSelectContext creates a new instance of the DBQueryContext service.
-func NewDBSelectContext(s *zap.SugaredLogger, conn *sqlx.Conn, trace bool) *DBQueryContext {
-	return &DBQueryContext{s: s, conn: conn, trace: trace}
+func NewDBSelectContext(s *zap.SugaredLogger, db *sqlx.DB, conn *sqlx.Conn, trace bool) *DBQueryContext {
+	return &DBQueryContext{s: s, db: db, conn: conn, trace: trace}
 }
 
 // SelectContext logs the give query before executing it and the result afterward, if tracing is enabled?
@@ -49,7 +50,12 @@ func (q *DBQueryContext) SelectContext(ctx context.Context, dest interface{}, qu
 	if q.trace {
 		q.SQLQueryTrace(query, args...)
 	}
-	err := q.conn.SelectContext(ctx, dest, query, args...)
+	var err error
+	if q.conn != nil {
+		err = q.conn.SelectContext(ctx, dest, query, args...)
+	} else {
+		err = q.db.SelectContext(ctx, dest, query, args...)
+	}
 	if err == nil && q.trace {
 		q.SQLResultsTrace(dest)
 	}
