@@ -28,9 +28,9 @@ import (
 	"testing"
 
 	_ "github.com/lib/pq"
-	_ "github.com/mattn/go-sqlite3"
 	zlog "github.com/scanoss/zap-logging-helper/pkg/logger"
 	"golang.org/x/net/context"
+	_ "modernc.org/sqlite"
 )
 
 func TestOpenDBConnectionSqLite(t *testing.T) {
@@ -40,7 +40,7 @@ func TestOpenDBConnectionSqLite(t *testing.T) {
 	}
 	defer zlog.SyncZap()
 
-	db, err := OpenDBConnection(":memory:", "sqlite3", "", "", "", "", "")
+	db, err := OpenDBConnection(":memory:", "sqlite", "", "", "", "", "")
 	if err != nil {
 		t.Errorf("Unexpected error: %v", err)
 	}
@@ -66,7 +66,7 @@ func TestSetDBOptionsAndPing(t *testing.T) {
 		t.Fatalf("an error '%s' was not expected when opening a sugared logger", err)
 	}
 	defer zlog.SyncZap()
-	db, err := OpenDBConnection(":memory:", "sqlite3", "", "", "", "", "")
+	db, err := OpenDBConnection(":memory:", "sqlite", "", "", "", "", "")
 	if err != nil {
 		t.Errorf("Unexpected error: %v", err)
 	}
@@ -87,7 +87,7 @@ func TestCloseSQLConnection(t *testing.T) {
 		t.Fatalf("an error '%s' was not expected when opening a sugared logger", err)
 	}
 	defer zlog.SyncZap()
-	db, err := OpenDBConnection(":memory:", "sqlite3", "", "", "", "", "")
+	db, err := OpenDBConnection(":memory:", "sqlite", "", "", "", "", "")
 	if err != nil {
 		t.Errorf("Unexpected error: %v", err)
 	}
@@ -111,7 +111,7 @@ func TestGetILikeOperator(t *testing.T) {
 	if likeOperator != "LIKE" {
 		t.Errorf("Expected 'LIKE' but got %s", likeOperator)
 	}
-	db, err := OpenDBConnection(":memory:", "sqlite3", "", "", "", "", "")
+	db, err := OpenDBConnection(":memory:", "sqlite", "", "", "", "", "")
 	if err != nil {
 		t.Errorf("Unexpected error: %v", err)
 	}
