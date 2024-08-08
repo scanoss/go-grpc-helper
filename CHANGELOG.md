@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Upcoming changes...
 
+## [0.6.0] - 2024-08-08
+### Added
+- Added 'sqlite' DB query string
+- Switched to `modernc.org/sqlite` driver
+- Upgraded to go 1.22
+
 ## [0.5.1] - 2024-06-24
 ### Added
 - Added case-insensitive like operator lookup based on DB type
@@ -45,3 +51,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [0.4.0]: https://github.com/scanoss/go-grpc-helper/compare/v0.3.0...v0.4.0
 [0.5.0]: https://github.com/scanoss/go-grpc-helper/compare/v0.4.0...v0.5.0
 [0.5.1]: https://github.com/scanoss/go-grpc-helper/compare/v0.5.0...v0.5.1
+[0.6.0]: https://github.com/scanoss/go-grpc-helper/compare/v0.5.1...v0.6.0

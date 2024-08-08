@@ -75,7 +75,7 @@ The [database](pkg/grpc/database) package provide the following helpers:
 
 #### Open
 ```go
-db, err := OpenDBConnection(":memory:", "sqlite3", "", "", "", "", "")
+db, err := OpenDBConnection(":memory:", "sqlite", "", "", "", "", "")
 ```
 
 #### Setup
