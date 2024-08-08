@@ -96,6 +96,8 @@ func GetLikeOperator(db *sqlx.DB) string {
 			return "ILIKE"
 		case "sqlite3":
 			return defaultLike
+		case "sqlite":
+			return defaultLike
 		}
 		zlog.S.Warnf("DriverName %s is unkown. Defaulting to %s", driverName, defaultLike)
 	} else {
