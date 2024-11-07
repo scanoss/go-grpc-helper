@@ -39,7 +39,7 @@ import (
 )
 
 // SetupGateway configures.
-func SetupGateway(grpcPort, httpPort, tlsCertFile string, allowedIPs, deniedIPs []string,
+func SetupGateway(grpcPort, httpPort, tlsCertFile, CN string, allowedIPs, deniedIPs []string,
 	blockByDefault, trustProxy, startTLS bool) (*http.Server, *runtime.ServeMux, string, []grpc.DialOption, error) {
 	httpPort = utils.SetupPort(httpPort)
 	mux := runtime.NewServeMux()
@@ -59,7 +59,7 @@ func SetupGateway(grpcPort, httpPort, tlsCertFile string, allowedIPs, deniedIPs 
 	}
 	var opts []grpc.DialOption
 	if startTLS {
-		creds, err := credentials.NewClientTLSFromFile(tlsCertFile, "")
+		creds, err := credentials.NewClientTLSFromFile(tlsCertFile, CN)
 		if err != nil {
 			zlog.S.Errorf("Problem loading TLS file: %s - %v", tlsCertFile, err)
 			return nil, nil, "", nil, fmt.Errorf("failed to load TLS credentials from file")
