@@ -38,8 +38,21 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 )
 
-// SetupGateway configures.
-func SetupGateway(grpcPort, httpPort, tlsCertFile, CN string, allowedIPs, deniedIPs []string,
+// SetupGateway configures and returns an HTTP server that acts as a gateway to a gRPC service.
+// The gateway is forced to connect to localhost regardless of the provided grpcPort hostname.
+//
+// Important note about localhost and certificates:
+// The gateway always establishes its connection to the gRPC server through localhost
+// (e.g., localhost:50051). Therefore, if the TLS certificate does not include "localhost"
+// in its subject/SAN fields, the connection will fail with a certificate validation error.
+// The commonName parameter allows you to override the hostname verification in such cases.
+//
+// For example:
+//   - If your certificate is issued for "api.example.com" without "localhost" in SAN:
+//     Set commonName="api.example.com" to match the certificate's subject.
+//   - If your certificate includes "localhost" in SAN:
+//     Set commonName="localhost" (or it can be left empty as "localhost" is the default).
+func SetupGateway(grpcPort, httpPort, tlsCertFile, commonName string, allowedIPs, deniedIPs []string,
 	blockByDefault, trustProxy, startTLS bool) (*http.Server, *runtime.ServeMux, string, []grpc.DialOption, error) {
 	httpPort = utils.SetupPort(httpPort)
 	mux := runtime.NewServeMux()
@@ -59,7 +72,7 @@ func SetupGateway(grpcPort, httpPort, tlsCertFile, CN string, allowedIPs, denied
 	}
 	var opts []grpc.DialOption
 	if startTLS {
-		creds, err := credentials.NewClientTLSFromFile(tlsCertFile, CN)
+		creds, err := credentials.NewClientTLSFromFile(tlsCertFile, commonName)
 		if err != nil {
 			zlog.S.Errorf("Problem loading TLS file: %s - %v", tlsCertFile, err)
 			return nil, nil, "", nil, fmt.Errorf("failed to load TLS credentials from file")
