@@ -41,7 +41,7 @@ func TestGatewaySetupNoTLS(t *testing.T) {
 	defer zlog.SyncZap()
 	allowedIPs := []string{"127.0.0.1"}
 	deniedIPs := []string{"192.168.0.1"}
-	srv, mux, gateway, opts, err := SetupGateway("9443", "8443", "", allowedIPs, deniedIPs, true, false, false)
+	srv, mux, gateway, opts, err := SetupGateway("9443", "8443", "", "", allowedIPs, deniedIPs, true, false, false)
 	if err != nil {
 		t.Errorf("Unexpected error: %v", err)
 	}
@@ -58,7 +58,7 @@ func TestGatewaySetupTLS(t *testing.T) {
 	defer zlog.SyncZap()
 	allowedIPs := []string{"127.0.0.1"}
 	deniedIPs := []string{"192.168.0.1"}
-	srv, mux, gateway, opts, err := SetupGateway(":9443", "8443", "../../../tests/server.crt", allowedIPs, deniedIPs, true, false, true)
+	srv, mux, gateway, opts, err := SetupGateway(":9443", "8443", "../../../tests/server.crt", "", allowedIPs, deniedIPs, true, false, true)
 	if err != nil {
 		t.Errorf("Unexpected error: %v", err)
 	}

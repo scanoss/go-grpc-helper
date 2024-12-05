@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Upcoming changes...
 
+
+## [0.7.0] - 2024-12-05
+### Added
+- Support for configuring custom CommonName (CN) values in TLS certificates, enabling more flexible certificate management and custom domain setups
+
 ## [0.6.0] - 2024-08-08
 ### Added
 - Added 'sqlite' DB query string
