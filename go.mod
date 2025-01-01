@@ -9,7 +9,7 @@ require (
 	github.com/lib/pq v1.10.9
 	github.com/scanoss/ipfilter/v2 v2.0.2
 	github.com/scanoss/zap-logging-helper v0.3.2
-	github.com/stretchr/testify v1.9.0
+	github.com/stretchr/testify v1.10.0
 	go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc v0.53.0
 	go.opentelemetry.io/otel v1.32.0
 	go.opentelemetry.io/otel/exporters/otlp/otlpmetric/otlpmetricgrpc v1.32.0
