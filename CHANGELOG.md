@@ -13,6 +13,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Added HTTP response modifier
 - Added reflection option
+- Upgraded golang version to 1.24.x
+- Upgraded golangci-lint to v1.64.8
+### Fixed
+- Fixed linter 
 
 ## [0.8.0] - 2024-12-05
 ### Added
