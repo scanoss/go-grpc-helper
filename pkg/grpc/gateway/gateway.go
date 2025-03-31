@@ -26,11 +26,12 @@ package gateway
 import (
 	"context"
 	"fmt"
-	"google.golang.org/protobuf/proto"
 	"net/http"
 	"strconv"
 	"strings"
 	"time"
+
+	"google.golang.org/protobuf/proto"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/scanoss/go-grpc-helper/pkg/grpc/utils"
