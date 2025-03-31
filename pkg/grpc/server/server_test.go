@@ -45,7 +45,7 @@ func TestSetupGrpcServerNoTLS(t *testing.T) {
 	allowedIPs := []string{"127.0.0.1"}
 	deniedIPs := []string{"192.168.0.1"}
 
-	listen, server, err := SetupGrpcServer(":0", "", "", allowedIPs, deniedIPs, false, true, false, false)
+	listen, server, err := SetupGrpcServer(":0", "", "", allowedIPs, deniedIPs, false, true, false, false, false)
 	if err != nil {
 		t.Errorf("Unexpected error: %v", err)
 	}
@@ -66,7 +66,7 @@ func TestSetupGrpcServerWithTLS(t *testing.T) {
 	defer zlog.SyncZap()
 	allowedIPs := []string{"127.0.0.1"}
 	deniedIPs := []string{"192.168.0.1"}
-	listen, server, err := SetupGrpcServer(":0", "../../../tests/server.crt", "../../../tests/server.key", allowedIPs, deniedIPs, true, true, false, false)
+	listen, server, err := SetupGrpcServer(":0", "../../../tests/server.crt", "../../../tests/server.key", allowedIPs, deniedIPs, true, true, false, false, false)
 	if err != nil {
 		t.Errorf("Unexpected error: %v", err)
 	}
@@ -86,7 +86,7 @@ func TestSetupGrpcServerNoTLSShutdown(t *testing.T) {
 	defer zlog.SyncZap()
 	allowedIPs := []string{"127.0.0.1"}
 	deniedIPs := []string{"192.168.0.1"}
-	listen, server, err := SetupGrpcServer(":0", "", "", allowedIPs, deniedIPs, false, true, false, false)
+	listen, server, err := SetupGrpcServer(":0", "", "", allowedIPs, deniedIPs, false, true, false, false, false)
 	if err != nil {
 		t.Errorf("Unexpected error: %v", err)
 	}
@@ -134,7 +134,7 @@ func TestSetupGrpcServerNoTLSTelemetry(t *testing.T) {
 	if err != nil {
 		t.Errorf("Unexpected error: %v", err)
 	}
-	listen, server, err := SetupGrpcServer(":0", "", "", allowedIPs, deniedIPs, false, true, false, true)
+	listen, server, err := SetupGrpcServer(":0", "", "", allowedIPs, deniedIPs, false, true, false, true, false)
 	if err != nil {
 		t.Errorf("Unexpected error: %v", err)
 	}
