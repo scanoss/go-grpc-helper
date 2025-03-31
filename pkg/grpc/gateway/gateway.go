@@ -24,8 +24,11 @@
 package gateway
 
 import (
+	"context"
 	"fmt"
+	"google.golang.org/protobuf/proto"
 	"net/http"
+	"strconv"
 	"strings"
 	"time"
 
@@ -55,7 +58,7 @@ import (
 func SetupGateway(grpcPort, httpPort, tlsCertFile, commonName string, allowedIPs, deniedIPs []string,
 	blockByDefault, trustProxy, startTLS bool) (*http.Server, *runtime.ServeMux, string, []grpc.DialOption, error) {
 	httpPort = utils.SetupPort(httpPort)
-	mux := runtime.NewServeMux()
+	mux := runtime.NewServeMux(runtime.WithForwardResponseOption(httpResponseModifier))
 	srv := &http.Server{
 		Addr:              httpPort,
 		ReadTimeout:       10 * time.Second,
@@ -103,4 +106,23 @@ func StartGateway(srv *http.Server, tlsCertFile, tlsKeyFile string, startTLS boo
 	if httpErr != nil && fmt.Sprintf("%s", httpErr) != "http: Server closed" {
 		zlog.S.Panicf("issue encountered when starting service: %v", httpErr)
 	}
+}
+
+// httpResponseModifier sets the HTTP status code based on the "x-http-code" trailer
+// in the gRPC response metadata. This allows gRPC services to control the HTTP status
+// when exposed via the gateway.
+func httpResponseModifier(ctx context.Context, w http.ResponseWriter, p proto.Message) error {
+	md, ok := runtime.ServerMetadataFromContext(ctx)
+	if !ok {
+		return nil
+	}
+	// set http status code
+	if vals := md.TrailerMD.Get("x-http-code"); len(vals) > 0 {
+		code, err := strconv.Atoi(vals[0])
+		if err != nil {
+			return err
+		}
+		w.WriteHeader(code)
+	}
+	return nil
 }
