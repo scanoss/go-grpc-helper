@@ -44,11 +44,12 @@ import (
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
+	"google.golang.org/grpc/reflection"
 )
 
-// SetupGrpcServer configures the port, filtering & logging interceptors for a gRPC Server.
+// SetupGrpcServer configures the port, filtering, logging interceptors & reflection for a gRPC Server.
 func SetupGrpcServer(port, tlsCertFile, tlsKeyFile string, allowedIPs, deniedIPs []string, startTLS, blockedByDefault,
-	trustProxy, telemetry bool) (net.Listener, *grpc.Server, error) {
+	trustProxy, telemetry, reflect bool) (net.Listener, *grpc.Server, error) {
 	port = utils.SetupPort(port)
 	listen, err := net.Listen("tcp", port)
 	if err != nil {
@@ -79,7 +80,10 @@ func SetupGrpcServer(port, tlsCertFile, tlsKeyFile string, allowedIPs, deniedIPs
 	opts = append(opts, grpc.UnaryInterceptor(grpcmiddleware.ChainUnaryServer(interceptors...)))
 	// register service
 	server := grpc.NewServer(opts...)
-
+	// setup refection if requested
+	if reflect {
+		reflection.Register(server)
+	}
 	return listen, server, nil
 }
 
