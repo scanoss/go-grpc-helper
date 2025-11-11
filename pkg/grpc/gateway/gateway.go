@@ -31,8 +31,6 @@ import (
 	"strings"
 	"time"
 
-	"google.golang.org/protobuf/proto"
-
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/scanoss/go-grpc-helper/pkg/grpc/utils"
 	"github.com/scanoss/ipfilter/v2"
@@ -40,6 +38,7 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/credentials/insecure"
+	"google.golang.org/protobuf/proto"
 )
 
 // SetupGateway configures and returns an HTTP server that acts as a gateway to a gRPC service.
@@ -59,7 +58,10 @@ import (
 func SetupGateway(grpcPort, httpPort, tlsCertFile, commonName string, allowedIPs, deniedIPs []string,
 	blockByDefault, trustProxy, startTLS bool) (*http.Server, *runtime.ServeMux, string, []grpc.DialOption, error) {
 	httpPort = utils.SetupPort(httpPort)
-	mux := runtime.NewServeMux(runtime.WithForwardResponseOption(httpResponseModifier))
+	mux := runtime.NewServeMux(
+		runtime.WithForwardResponseOption(httpSuccessResponseModifier),
+		runtime.WithErrorHandler(httpErrorResponseModifier),
+	)
 	srv := &http.Server{
 		Addr:              httpPort,
 		ReadTimeout:       10 * time.Second,
@@ -109,21 +111,49 @@ func StartGateway(srv *http.Server, tlsCertFile, tlsKeyFile string, startTLS boo
 	}
 }
 
-// httpResponseModifier sets the HTTP status code based on the "x-http-code" trailer
-// in the gRPC response metadata. This allows gRPC services to control the HTTP status
-// when exposed via the gateway.
-func httpResponseModifier(ctx context.Context, w http.ResponseWriter, p proto.Message) error {
+// httpSuccessResponseModifier is called for all successful gRPC responses (err == nil).
+// It checks the x-http-code trailer and sets the appropriate HTTP status code.
+// This allows the middleware to set custom HTTP codes even when returning err == nil.
+func httpSuccessResponseModifier(ctx context.Context, w http.ResponseWriter, _ proto.Message) error {
 	md, ok := runtime.ServerMetadataFromContext(ctx)
 	if !ok {
+		fmt.Printf("httpSuccessResponseModifier: No server metadata found\n")
 		return nil
 	}
-	// set http status code
+	// Check for custom HTTP status code in trailer
 	if vals := md.TrailerMD.Get("x-http-code"); len(vals) > 0 {
+		fmt.Printf("httpSuccessResponseModifier: Found x-http-code: %s\n", vals[0])
 		code, err := strconv.Atoi(vals[0])
 		if err != nil {
-			return err
+			fmt.Printf("httpSuccessResponseModifier: Error parsing x-http-code: %v\n", err)
+			return nil
 		}
+		fmt.Printf("httpSuccessResponseModifier: Setting HTTP status code: %d\n", code)
 		w.WriteHeader(code)
+	} else {
+		fmt.Printf("httpSuccessResponseModifier: No x-http-code trailer found, using default\n")
 	}
 	return nil
+}
+
+// httpResponseModifier sets the HTTP status code based on the "x-http-code" trailer
+// in the gRPC response metadata. This allows gRPC services to control the HTTP status
+// when exposed via the gateway. This is called only for error responses.
+func httpErrorResponseModifier(ctx context.Context, mux *runtime.ServeMux, marshaler runtime.Marshaler, w http.ResponseWriter, r *http.Request, err error) {
+	md, ok := runtime.ServerMetadataFromContext(ctx)
+	if !ok {
+		fmt.Printf("httpResponseModifier: No server metadata found\n")
+	}
+	// Check for custom HTTP status code
+	if vals := md.TrailerMD.Get("x-http-code"); len(vals) > 0 {
+		fmt.Printf("httpResponseModifier: Found x-http-code: %s\n", vals[0])
+		code, err := strconv.Atoi(vals[0])
+		if err != nil {
+			fmt.Printf("httpResponseModifier: Error parsing x-http-code: %v\n", err)
+		}
+		fmt.Printf("httpResponseModifier: Setting HTTP status code: %d\n", code)
+		w.WriteHeader(code)
+	} else {
+		fmt.Printf("httpResponseModifier: No x-http-code header found\n")
+	}
 }
