@@ -147,9 +147,9 @@ func httpErrorResponseModifier(ctx context.Context, mux *runtime.ServeMux, marsh
 	// Check for custom HTTP status code
 	if vals := md.TrailerMD.Get("x-http-code"); len(vals) > 0 {
 		fmt.Printf("httpResponseModifier: Found x-http-code: %s\n", vals[0])
-		code, err := strconv.Atoi(vals[0])
-		if err != nil {
-			fmt.Printf("httpResponseModifier: Error parsing x-http-code: %v\n", err)
+		code, parseErr := strconv.Atoi(vals[0])
+		if parseErr != nil {
+			fmt.Printf("httpResponseModifier: Error parsing x-http-code: %v\n", parseErr)
 		}
 		fmt.Printf("httpResponseModifier: Setting HTTP status code: %d\n", code)
 		w.WriteHeader(code)

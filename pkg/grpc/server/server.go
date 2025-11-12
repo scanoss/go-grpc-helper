@@ -33,14 +33,14 @@ import (
 	"syscall"
 	"time"
 
-	"go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
-
 	grpcmiddleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	grpczap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
+	localinterceptor "github.com/scanoss/go-grpc-helper/pkg/grpc/interceptors"
 	"github.com/scanoss/go-grpc-helper/pkg/grpc/utils"
 	"github.com/scanoss/ipfilter/v2"
 	"github.com/scanoss/zap-logging-helper/pkg/grpc/interceptor"
 	zlog "github.com/scanoss/zap-logging-helper/pkg/logger"
+	"go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
@@ -48,6 +48,7 @@ import (
 )
 
 // SetupGrpcServer configures the port, filtering, logging interceptors & reflection for a gRPC Server.
+// Custom interceptors can be provided and will be executed after the built-in interceptors.
 func SetupGrpcServer(port, tlsCertFile, tlsKeyFile string, allowedIPs, deniedIPs []string, startTLS, blockedByDefault,
 	trustProxy, telemetry, reflect bool) (net.Listener, *grpc.Server, error) {
 	port = utils.SetupPort(port)
@@ -65,11 +66,13 @@ func SetupGrpcServer(port, tlsCertFile, tlsKeyFile string, allowedIPs, deniedIPs
 	}
 	interceptors = append(interceptors, grpczap.UnaryServerInterceptor(zlog.L))
 	interceptors = append(interceptors, interceptor.ContextPropagationUnaryServerInterceptor()) // Needs to be called after UnaryServerInterceptor to make sure the logger is set
+	interceptors = append(interceptors, localinterceptor.ResponseInterceptor())
+
 	var opts []grpc.ServerOption
 	if startTLS {
-		creds, err := credentials.NewServerTLSFromFile(tlsCertFile, tlsKeyFile)
-		if err != nil {
-			zlog.S.Errorf("Problem loading TLS file: %s - %v", tlsCertFile, err)
+		creds, tlsErr := credentials.NewServerTLSFromFile(tlsCertFile, tlsKeyFile)
+		if tlsErr != nil {
+			zlog.S.Errorf("Problem loading TLS file: %s - %v", tlsCertFile, tlsErr)
 			return nil, nil, fmt.Errorf("failed to load TLS credentials from file")
 		}
 		opts = append(opts, grpc.Creds(creds))
