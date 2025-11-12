@@ -109,12 +109,12 @@ func InitTelemetryProviders(serviceName, serviceNamespace, version, oltpExporter
 	return func() {
 		cxt, cancel := context.WithTimeout(ctx, 5*time.Second)
 		defer cancel()
-		if err := traceExp.Shutdown(cxt); err != nil {
-			otel.Handle(err)
+		if shutdownErr := traceExp.Shutdown(cxt); shutdownErr != nil {
+			otel.Handle(shutdownErr)
 		}
 		// pushes any last exports to the receiver
-		if err := meterProvider.Shutdown(cxt); err != nil {
-			otel.Handle(err)
+		if shutdownErr := meterProvider.Shutdown(cxt); shutdownErr != nil {
+			otel.Handle(shutdownErr)
 		}
 	}, nil
 }
