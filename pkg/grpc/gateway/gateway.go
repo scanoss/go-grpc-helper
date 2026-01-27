@@ -31,6 +31,9 @@ import (
 	"strings"
 	"time"
 
+	"google.golang.org/protobuf/encoding/protojson"
+	"google.golang.org/protobuf/proto"
+
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/scanoss/go-grpc-helper/pkg/grpc/utils"
 	"github.com/scanoss/ipfilter/v2"
@@ -38,7 +41,6 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/credentials/insecure"
-	"google.golang.org/protobuf/proto"
 )
 
 // SetupGateway configures and returns an HTTP server that acts as a gateway to a gRPC service.
@@ -59,6 +61,16 @@ func SetupGateway(grpcPort, httpPort, tlsCertFile, commonName string, allowedIPs
 	blockByDefault, trustProxy, startTLS bool) (*http.Server, *runtime.ServeMux, string, []grpc.DialOption, error) {
 	httpPort = utils.SetupPort(httpPort)
 	mux := runtime.NewServeMux(
+		runtime.WithMarshalerOption(runtime.MIMEWildcard, &runtime.HTTPBodyMarshaler{
+			Marshaler: &runtime.JSONPb{
+				MarshalOptions: protojson.MarshalOptions{
+					EmitDefaultValues: true,
+				},
+				UnmarshalOptions: protojson.UnmarshalOptions{
+					DiscardUnknown: true,
+				},
+			},
+		}),
 		runtime.WithForwardResponseOption(httpSuccessResponseModifier),
 		runtime.WithErrorHandler(httpErrorResponseModifier),
 	)
