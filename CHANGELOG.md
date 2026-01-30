@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Upcoming changes...
 
+## [0.11.0] - 2026-01-30
+### Changed
+- **BREAKING**: Replace grpc-gateway JSON marshaler to use `EmitDefaultValues` instead of `EmitUnpopulated`. Unset protobuf message fields are now **omitted** from REST JSON responses instead of appearing as `null`. Scalar defaults (`""`, `0`, `false`) and empty arrays (`[]`) are still emitted. Services relying on `null` presence for unset message-type fields must be updated accordingly.
+
 ## [0.10.0] - 2025-12-09
 ### Added
 - Added response interceptor for custom error handling with HTTP status code mapping
@@ -83,4 +87,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [0.7.0]: https://github.com/scanoss/go-grpc-helper/compare/v0.6.0...v0.7.0
 [0.8.0]: https://github.com/scanoss/go-grpc-helper/compare/v0.7.0...v0.8.0
 [0.9.0]: https://github.com/scanoss/go-grpc-helper/compare/v0.8.0...v0.9.0
+[0.11.0]: https://github.com/scanoss/go-grpc-helper/compare/v0.10.0...v0.11.0
 [0.10.0]: https://github.com/scanoss/go-grpc-helper/compare/v0.9.0...v0.10.0
