@@ -30,7 +30,7 @@ import (
 	"github.com/scanoss/go-grpc-helper/pkg/grpc/interceptors"
 )
 
-// ResponseError represents a service-level error with HTTP status mapping and additional context..
+// ResponseError represents a service-level error with HTTP status mapping and additional context.
 
 // BadRequest
 // Use for: missing required fields, malformed input, invalid parameters.
