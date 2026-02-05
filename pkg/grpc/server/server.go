@@ -21,7 +21,7 @@
  * THE SOFTWARE.
  */
 
-// Package server provides functions to configure, start and shutdown gRPC services
+// Package server provides functions to configure, start, and shutdown gRPC services
 package server
 
 import (
@@ -83,7 +83,7 @@ func SetupGrpcServer(port, tlsCertFile, tlsKeyFile string, allowedIPs, deniedIPs
 	opts = append(opts, grpc.UnaryInterceptor(grpcmiddleware.ChainUnaryServer(interceptors...)))
 	// register service
 	server := grpc.NewServer(opts...)
-	// setup refection if requested
+	// set up refection if requested
 	if reflect {
 		reflection.Register(server)
 	}
@@ -117,9 +117,8 @@ func WaitServerComplete(srv *http.Server, server *grpc.Server) error {
 		if err := srv.Shutdown(ctx); err != nil {
 			zlog.S.Warnf("error shutting down server %s", err)
 			return fmt.Errorf("issue encountered while shutting down service")
-		} else {
-			zlog.S.Info("REST server gracefully stopped")
 		}
+		zlog.S.Info("REST server gracefully stopped")
 	}
 	if server != nil {
 		zlog.S.Info("shutting down gRPC server...")
