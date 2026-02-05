@@ -12,6 +12,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added `ComponentStatus` domain model with `StatusCode` type and constants (`ComponentNotFound`, `InvalidPurl`, `ComponentWithoutInfo`, `Success`, `InvalidSemver`)
 - Added `StatusCodeToErrorCode` function to map domain status codes to protobuf `ErrorCode` values
 
+### Changed
+- Updated `github.com/grpc-ecosystem/grpc-gateway/v2` from v2.27.1 to v2.27.7
+- Updated `github.com/lib/pq` from v1.10.9 to v1.11.1
+- Updated `github.com/scanoss/papi` from v0.25.1 to v0.28.0
+- Updated `github.com/scanoss/zap-logging-helper` from v0.3.2 to v0.4.0
+- Updated `github.com/stretchr/testify` from v1.10.0 to v1.11.1
+- Updated `go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc` from v0.60.0 to v0.65.0
+- Updated `go.opentelemetry.io/otel` (and sub-packages) from v1.35.0 to v1.40.0
+- Updated `go.uber.org/zap` from v1.27.0 to v1.27.1
+- Updated `golang.org/x/net` from v0.40.0 to v0.49.0
+- Updated `google.golang.org/grpc` from v1.73.0 to v1.78.0
+- Updated `google.golang.org/protobuf` from v1.36.6 to v1.36.11
+- Updated `modernc.org/sqlite` from v1.37.0 to v1.44.3
+
 ## [0.11.0] - 2026-01-30
 ### Changed
 - **BREAKING**: Replace grpc-gateway JSON marshaler to use `EmitDefaultValues` instead of `EmitUnpopulated`. Unset protobuf message fields are now **omitted** from REST JSON responses instead of appearing as `null`. Scalar defaults (`""`, `0`, `false`) and empty arrays (`[]`) are still emitted. Services relying on `null` presence for unset message-type fields must be updated accordingly.
