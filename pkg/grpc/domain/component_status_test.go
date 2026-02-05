@@ -25,8 +25,9 @@ package domain
 
 import (
 	"fmt"
-	pb "github.com/scanoss/papi/api/commonv2"
 	"testing"
+
+	pb "github.com/scanoss/papi/api/commonv2"
 )
 
 func TestStatusCodeToErrorCodeBuilder(t *testing.T) {
