@@ -63,7 +63,7 @@ func TestNewBadRequestError(t *testing.T) {
 			if serviceErr.InternalCode != "BAD_REQUEST" {
 				t.Errorf("expected internal code %q, got %q", "BAD_REQUEST", serviceErr.InternalCode)
 			}
-			if serviceErr.Err != tt.err {
+			if !errors.Is(serviceErr.Err, tt.err) {
 				t.Errorf("expected error %v, got %v", tt.err, serviceErr.Err)
 			}
 		})
@@ -139,7 +139,7 @@ func TestNewInternalError(t *testing.T) {
 			if serviceErr.InternalCode != "INTERNAL_ERROR" {
 				t.Errorf("expected internal code %q, got %q", "INTERNAL_ERROR", serviceErr.InternalCode)
 			}
-			if serviceErr.Err != tt.err {
+			if !errors.Is(serviceErr.Err, tt.err) {
 				t.Errorf("expected error %v, got %v", tt.err, serviceErr.Err)
 			}
 		})
@@ -177,7 +177,7 @@ func TestNewServiceUnavailableError(t *testing.T) {
 			if serviceErr.InternalCode != "SERVICE_UNAVAILABLE" {
 				t.Errorf("expected internal code %q, got %q", "SERVICE_UNAVAILABLE", serviceErr.InternalCode)
 			}
-			if serviceErr.Err != tt.err {
+			if !errors.Is(serviceErr.Err, tt.err) {
 				t.Errorf("expected error %v, got %v", tt.err, serviceErr.Err)
 			}
 		})
@@ -252,11 +252,11 @@ func TestServiceError_ErrorChaining(t *testing.T) {
 	}
 
 	// Test that we can access the original error via the ResponseError's Err field
-	if targetErr.Err != originalErr {
+	if !errors.Is(targetErr.Err, originalErr) {
 		t.Errorf("expected wrapped error to be %v, got %v", originalErr, targetErr.Err)
 	}
 
-	// Verify the error message includes both the service message and original error
+	// Verify the error message includes both the service message and the original error
 	expectedErrorMsg := "service failed: original error"
 	if serviceErr.Error() != expectedErrorMsg {
 		t.Errorf("expected error message %q, got %q", expectedErrorMsg, serviceErr.Error())

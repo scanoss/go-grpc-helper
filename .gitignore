@@ -10,6 +10,8 @@
 
 # Output of the go coverage tool, specifically when used with LiteIDE
 *.out
+coverage*.txt
+coverage*.html
 
 # Ignore env files
 .env
@@ -21,3 +23,5 @@
 .vscode/
 *.wfp
 *-result.json
+
+.DS_Store

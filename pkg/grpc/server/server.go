@@ -21,10 +21,11 @@
  * THE SOFTWARE.
  */
 
-// Package server provides functions to configure, start and shutdown gRPC services
+// Package server provides functions to configure, start, and shutdown gRPC services
 package server
 
 import (
+	"context"
 	"fmt"
 	"net"
 	"net/http"
@@ -41,7 +42,6 @@ import (
 	"github.com/scanoss/zap-logging-helper/pkg/grpc/interceptor"
 	zlog "github.com/scanoss/zap-logging-helper/pkg/logger"
 	"go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
-	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/reflection"
@@ -83,7 +83,7 @@ func SetupGrpcServer(port, tlsCertFile, tlsKeyFile string, allowedIPs, deniedIPs
 	opts = append(opts, grpc.UnaryInterceptor(grpcmiddleware.ChainUnaryServer(interceptors...)))
 	// register service
 	server := grpc.NewServer(opts...)
-	// setup refection if requested
+	// set up refection if requested
 	if reflect {
 		reflection.Register(server)
 	}
@@ -117,9 +117,8 @@ func WaitServerComplete(srv *http.Server, server *grpc.Server) error {
 		if err := srv.Shutdown(ctx); err != nil {
 			zlog.S.Warnf("error shutting down server %s", err)
 			return fmt.Errorf("issue encountered while shutting down service")
-		} else {
-			zlog.S.Info("REST server gracefully stopped")
 		}
+		zlog.S.Info("REST server gracefully stopped")
 	}
 	if server != nil {
 		zlog.S.Info("shutting down gRPC server...")
