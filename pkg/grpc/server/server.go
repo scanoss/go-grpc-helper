@@ -25,6 +25,7 @@
 package server
 
 import (
+	"context"
 	"fmt"
 	"net"
 	"net/http"
@@ -41,7 +42,6 @@ import (
 	"github.com/scanoss/zap-logging-helper/pkg/grpc/interceptor"
 	zlog "github.com/scanoss/zap-logging-helper/pkg/logger"
 	"go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
-	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/reflection"
