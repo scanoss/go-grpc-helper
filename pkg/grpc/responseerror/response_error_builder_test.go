@@ -252,7 +252,7 @@ func TestServiceError_ErrorChaining(t *testing.T) {
 	}
 
 	// Test that we can access the original error via the ResponseError's Err field
-	if !errors.Is(originalErr, targetErr.Err) {
+	if !errors.Is(targetErr.Err, originalErr) {
 		t.Errorf("expected wrapped error to be %v, got %v", originalErr, targetErr.Err)
 	}
 
