@@ -8,7 +8,7 @@ require (
 	github.com/jmoiron/sqlx v1.4.0
 	github.com/lib/pq v1.11.1
 	github.com/scanoss/ipfilter/v2 v2.0.2
-	github.com/scanoss/papi v0.28.0
+	github.com/scanoss/papi v0.30.0
 	github.com/scanoss/zap-logging-helper v0.4.0
 	github.com/stretchr/testify v1.11.1
 	go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc v0.65.0

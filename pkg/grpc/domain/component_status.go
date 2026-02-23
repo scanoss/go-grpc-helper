@@ -49,6 +49,8 @@ const (
 	Success StatusCode = "SUCCESS"
 	// InvalidSemver indicates the provided semantic version is invalid.
 	InvalidSemver StatusCode = "INVALID_SEMVER"
+	// VersionNotFound indicates the component version was not found.
+	VersionNotFound StatusCode = "VERSION_NOT_FOUND"
 )
 
 // StatusCodeToErrorCode maps a domain StatusCode to its corresponding protobuf ErrorCode.
@@ -63,6 +65,8 @@ func StatusCodeToErrorCode(code StatusCode) *pb.ErrorCode {
 		return pb.ErrorCode_INVALID_SEMVER.Enum()
 	case ComponentWithoutInfo:
 		return pb.ErrorCode_NO_INFO.Enum()
+	case VersionNotFound:
+		return pb.ErrorCode_VERSION_NOT_FOUND.Enum()
 	case Success:
 		return nil
 	default:
