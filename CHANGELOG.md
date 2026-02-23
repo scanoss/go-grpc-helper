@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.13.0] - 2026-02-24
+### Added
+- Added `VersionNotFound` status code to `ComponentStatus` domain model
+- Added `VersionNotFound` to `StatusCodeToErrorCode` mapping (`VERSION_NOT_FOUND`)
+
 ## [0.12.0] - 2026-02-06
 ### Added
 - Added `ComponentStatus` domain model with `StatusCode` type and constants (`ComponentNotFound`, `InvalidPurl`, `ComponentWithoutInfo`, `Success`, `InvalidSemver`)
@@ -107,3 +112,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [0.10.0]: https://github.com/scanoss/go-grpc-helper/compare/v0.9.0...v0.10.0
 [0.11.0]: https://github.com/scanoss/go-grpc-helper/compare/v0.10.0...v0.11.0
 [0.12.0]: https://github.com/scanoss/go-grpc-helper/compare/v0.11.0...v0.12.0
+[0.13.0]: https://github.com/scanoss/go-grpc-helper/compare/v0.12.0...v0.13.0
