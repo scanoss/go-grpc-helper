@@ -51,6 +51,8 @@ const (
 	InvalidSemver StatusCode = "INVALID_SEMVER"
 	// VersionNotFound indicates the component version was not found.
 	VersionNotFound StatusCode = "VERSION_NOT_FOUND"
+	// TooManyContributors indicates a component has too many contributors.
+	TooManyContributors = "TOO_MANY_CONTRIBUTORS"
 )
 
 // StatusCodeToErrorCode maps a domain StatusCode to its corresponding protobuf ErrorCode.
@@ -67,6 +69,8 @@ func StatusCodeToErrorCode(code StatusCode) *pb.ErrorCode {
 		return pb.ErrorCode_NO_INFO.Enum()
 	case VersionNotFound:
 		return pb.ErrorCode_VERSION_NOT_FOUND.Enum()
+	case TooManyContributors:
+		return pb.ErrorCode_TOO_MANY_CONTRIBUTORS.Enum()
 	case Success:
 		return nil
 	default:

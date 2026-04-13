@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.14.0] - 2026-04-13
+### Added
+- Added `TooManyContributors` status code to `ComponentStatus` domain model
+- Added `TooManyContributors` to `StatusCodeToErrorCode` mapping (`TOO_MANY_CONTRIBUTORS`)
+### Changed
+- Updated `github.com/scanoss/papi` to v0.35.0
+
 ## [0.13.0] - 2026-02-24
 ### Added
 - Added `VersionNotFound` status code to `ComponentStatus` domain model
@@ -113,3 +120,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [0.11.0]: https://github.com/scanoss/go-grpc-helper/compare/v0.10.0...v0.11.0
 [0.12.0]: https://github.com/scanoss/go-grpc-helper/compare/v0.11.0...v0.12.0
 [0.13.0]: https://github.com/scanoss/go-grpc-helper/compare/v0.12.0...v0.13.0
+[0.14.0]: https://github.com/scanoss/go-grpc-helper/compare/v0.13.0...v0.14.0
