@@ -31,8 +31,8 @@ import (
 // ComponentStatus represents the result status of a component operation,
 // containing a human-readable message and a machine-readable status code.
 type ComponentStatus struct {
-	Message    string
-	StatusCode StatusCode
+	Message    string     `json:"status_message"`
+	StatusCode StatusCode `json:"status_code"`
 }
 
 // StatusCode represents the possible outcome codes for a component operation.
@@ -44,21 +44,30 @@ const (
 	// InvalidPurl indicates the provided PURL is malformed or invalid.
 	InvalidPurl StatusCode = "INVALID_PURL"
 	// ComponentWithoutInfo indicates the component exists but has no available information.
+	//
+	// Deprecated: use NoInfo instead.
 	ComponentWithoutInfo StatusCode = "COMPONENT_WITHOUT_INFO"
+	// NoInfo indicates the component exists but has no available information.
+	NoInfo StatusCode = "NO_INFO"
 	// Success indicates the operation completed successfully.
 	Success StatusCode = "SUCCESS"
 	// InvalidSemver indicates the provided semantic version is invalid.
 	InvalidSemver StatusCode = "INVALID_SEMVER"
 	// VersionNotFound indicates the component version was not found.
 	VersionNotFound StatusCode = "VERSION_NOT_FOUND"
+
 	// TooManyContributors indicates a component has too many contributors.
-	TooManyContributors = "TOO_MANY_CONTRIBUTORS"
+	//
+	// Deprecated: moved to SemgrepService.
+	TooManyContributors StatusCode = "TOO_MANY_CONTRIBUTORS"
 )
 
 // StatusCodeToErrorCode maps a domain StatusCode to its corresponding protobuf ErrorCode.
 // Returns nil for Success or any unrecognized status code.
+//
+// Deprecated: use StatusCode.String() and the protobuf ErrorCode values directly.
 func StatusCodeToErrorCode(code StatusCode) *pb.ErrorCode {
-	switch code {
+	switch code { //nolint:exhaustive // deprecated, intentional partial mapping
 	case InvalidPurl:
 		return pb.ErrorCode_INVALID_PURL.Enum()
 	case ComponentNotFound:
@@ -76,4 +85,9 @@ func StatusCodeToErrorCode(code StatusCode) *pb.ErrorCode {
 	default:
 		return nil
 	}
+}
+
+// String returns the string representation of the StatusCode.
+func (s StatusCode) String() string {
+	return string(s)
 }

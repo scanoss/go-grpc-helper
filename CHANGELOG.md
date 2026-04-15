@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.15.0] - 2026-04-15
+### Added
+- Added `NoInfo` status code (`NO_INFO`) to `ComponentStatus` domain model
+### Deprecated
+- Marked `StatusCodeToErrorCode` as deprecated; use `StatusCode.String()` instead
+- Marked `TooManyContributors` status code as deprecated; moved to SemgrepService
+- Marked `ComponentWithoutInfo` status code as deprecated; use `NoInfo` instead
+
 ## [0.14.0] - 2026-04-13
 ### Added
 - Added `TooManyContributors` status code to `ComponentStatus` domain model
@@ -121,3 +129,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [0.12.0]: https://github.com/scanoss/go-grpc-helper/compare/v0.11.0...v0.12.0
 [0.13.0]: https://github.com/scanoss/go-grpc-helper/compare/v0.12.0...v0.13.0
 [0.14.0]: https://github.com/scanoss/go-grpc-helper/compare/v0.13.0...v0.14.0
+[0.15.0]: https://github.com/scanoss/go-grpc-helper/compare/v0.14.0...v0.15.0
