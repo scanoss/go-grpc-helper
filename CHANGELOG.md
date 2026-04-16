@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.15.1] - 2026-04-16
+### Added
+- Added `RequirementNotMet` status code (`REQUIREMENT_NOT_MET`) to `ComponentStatus` domain model
+
 ## [0.15.0] - 2026-04-15
 ### Added
 - Added `NoInfo` status code (`NO_INFO`) to `ComponentStatus` domain model
@@ -130,3 +134,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [0.13.0]: https://github.com/scanoss/go-grpc-helper/compare/v0.12.0...v0.13.0
 [0.14.0]: https://github.com/scanoss/go-grpc-helper/compare/v0.13.0...v0.14.0
 [0.15.0]: https://github.com/scanoss/go-grpc-helper/compare/v0.14.0...v0.15.0
+[0.15.1]: https://github.com/scanoss/go-grpc-helper/compare/v0.15.0...v0.15.1

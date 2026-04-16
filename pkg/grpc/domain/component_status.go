@@ -56,6 +56,8 @@ const (
 	// VersionNotFound indicates the component version was not found.
 	VersionNotFound StatusCode = "VERSION_NOT_FOUND"
 
+	RequirementNotMet StatusCode = "REQUIREMENT_NOT_MET"
+
 	// TooManyContributors indicates a component has too many contributors.
 	//
 	// Deprecated: moved to SemgrepService.
