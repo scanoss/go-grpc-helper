@@ -25,3 +25,5 @@ coverage*.html
 *-result.json
 
 .DS_Store
+
+.idea
