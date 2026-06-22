@@ -24,6 +24,7 @@
 package gateway
 
 import (
+	"errors"
 	"net/http"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
@@ -35,6 +36,9 @@ const HealthPath = "/health"
 // RegisterHealthEndpoint registers a GET /health liveness route on the mux.
 // A running gateway answers 200; a dead one refuses the connection.
 func RegisterHealthEndpoint(mux *runtime.ServeMux) error {
+	if mux == nil {
+		return errors.New("gateway mux is nil")
+	}
 	return mux.HandlePath(http.MethodGet, HealthPath, func(w http.ResponseWriter, _ *http.Request, _ map[string]string) {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)

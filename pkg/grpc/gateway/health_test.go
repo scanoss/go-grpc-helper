@@ -52,6 +52,12 @@ func TestRegisterHealthEndpoint(t *testing.T) {
 	}
 }
 
+func TestRegisterHealthEndpointNilMux(t *testing.T) {
+	if err := RegisterHealthEndpoint(nil); err == nil {
+		t.Error("expected an error for a nil mux, got nil")
+	}
+}
+
 // GET-only, so it can't be confused with the POST-only Echo RPCs.
 func TestRegisterHealthEndpointRejectsPost(t *testing.T) {
 	mux := runtime.NewServeMux()
