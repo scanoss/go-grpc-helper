@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.16.0] - 2026-06-22
+### Added
+- Added `RegisterHealthEndpoint` to register a GET `/health` liveness route on the grpc-gateway mux
+
 ## [0.15.1] - 2026-04-16
 ### Added
 - Added `RequirementNotMet` status code (`REQUIREMENT_NOT_MET`) to `ComponentStatus` domain model
