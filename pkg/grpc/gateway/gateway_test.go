@@ -25,12 +25,16 @@ package gateway
 
 import (
 	"net/http"
+	"net/http/httptest"
+	"strings"
 	"testing"
 	"time"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	zlog "github.com/scanoss/zap-logging-helper/pkg/logger"
 	"golang.org/x/net/context"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 func TestGatewaySetupNoTLS(t *testing.T) {
@@ -109,4 +113,23 @@ func TestStartGatewayTLS(t *testing.T) {
 		}
 	}()
 	StartGateway(srv, "../../../tests/server.crt", "../../../tests/server.key", true)
+}
+
+// TestErrorWithoutTrailerIsAnswered pins the response to an error the service never
+// saw, such as a request body that is not valid JSON. It carries no x-http-code
+// trailer, and used to be answered with HTTP 200 and an empty body.
+func TestErrorWithoutTrailerIsAnswered(t *testing.T) {
+	mux := runtime.NewServeMux()
+	rec := httptest.NewRecorder()
+	req := httptest.NewRequest(http.MethodPost, "/v2/components", strings.NewReader("{"))
+	err := status.Error(codes.InvalidArgument, "unexpected EOF")
+
+	httpErrorResponseModifier(context.Background(), mux, &runtime.JSONPb{}, rec, req, err)
+
+	if rec.Code != http.StatusBadRequest {
+		t.Errorf("HTTP code = %d, want %d", rec.Code, http.StatusBadRequest)
+	}
+	if rec.Body.Len() == 0 {
+		t.Error("want an error body, got an empty one")
+	}
 }

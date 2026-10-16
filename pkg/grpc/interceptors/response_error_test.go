@@ -34,7 +34,10 @@ import (
 	"testing"
 
 	"go.uber.org/zap"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/metadata"
+	"google.golang.org/grpc/status"
 )
 
 func TestServiceError_getHTTPCode(t *testing.T) {
@@ -248,6 +251,22 @@ func TestHandle(t *testing.T) {
 			checkMetadata:    true,
 		},
 		{
+			name:             "gRPC Unimplemented error",
+			err:              status.Error(codes.Unimplemented, "method Echo not implemented"),
+			expectedStatus:   common.StatusCode_FAILED,
+			expectedMessage:  "method Echo not implemented",
+			expectedHTTPCode: "501",
+			checkMetadata:    true,
+		},
+		{
+			name:             "gRPC Internal error keeps the generic message",
+			err:              status.Error(codes.Internal, "db password is hunter2"),
+			expectedStatus:   common.StatusCode_FAILED,
+			expectedMessage:  "internal server error",
+			expectedHTTPCode: "500",
+			checkMetadata:    true,
+		},
+		{
 			name:             "ResponseError with zero HTTP code",
 			err:              &ResponseError{Message: "test", HTTPCode: 0},
 			expectedStatus:   common.StatusCode_FAILED,
@@ -273,6 +292,40 @@ func TestHandle(t *testing.T) {
 
 			// Note: In a real gRPC server, we would be able to check the trailer metadata
 			// For unit tests, we just verify that Handle doesn't panic when setting trailers
+		})
+	}
+}
+
+// trailerStream captures the trailers handle sets, so the HTTP code can be checked.
+type trailerStream struct{ trailer metadata.MD }
+
+func (s *trailerStream) Method() string                  { return "/test/Method" }
+func (s *trailerStream) SetHeader(metadata.MD) error     { return nil }
+func (s *trailerStream) SendHeader(metadata.MD) error    { return nil }
+func (s *trailerStream) SetTrailer(md metadata.MD) error { s.trailer = metadata.Join(s.trailer, md); return nil }
+
+// TestHandleHTTPCode pins the x-http-code each kind of error is answered with.
+func TestHandleHTTPCode(t *testing.T) {
+	tests := []struct {
+		name string
+		err  error
+		want string
+	}{
+		{"ResponseError", &ResponseError{Message: "bad", HTTPCode: http.StatusBadRequest}, "400"},
+		{"Unimplemented", status.Error(codes.Unimplemented, "method Echo not implemented"), "501"},
+		{"InvalidArgument", status.Error(codes.InvalidArgument, "bad purl"), "400"},
+		{"NotFound", status.Error(codes.NotFound, "no such thing"), "404"},
+		{"Internal", status.Error(codes.Internal, "boom"), "500"},
+		{"plain error", errors.New("boom"), "500"},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			stream := &trailerStream{}
+			ctx := grpc.NewContextWithServerTransportStream(context.Background(), stream)
+			handle(ctx, zap.NewNop().Sugar(), tt.err)
+			if got := stream.trailer.Get("x-http-code"); len(got) != 1 || got[0] != tt.want {
+				t.Errorf("x-http-code = %v, want %s", got, tt.want)
+			}
 		})
 	}
 }

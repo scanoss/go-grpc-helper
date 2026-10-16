@@ -32,9 +32,12 @@ import (
 
 	"net/http"
 
+	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/metadata"
+	"google.golang.org/grpc/status"
 )
 
 type ResponseError struct {
@@ -102,6 +105,23 @@ func handle(ctx context.Context, s *zap.SugaredLogger, err error) *common.Status
 	}
 
 	// Default to 500 for unknown errors
+	// A gRPC status error with a specific code says what went wrong, and grpc-gateway
+	// defines its HTTP equivalent: Unimplemented is 501, InvalidArgument 400,
+	// NotFound 404. Answering all of them with 500 told a client that called an
+	// endpoint the service does not implement that the server had failed.
+	if st, ok := status.FromError(err); ok && st.Code() != codes.OK && st.Code() != codes.Unknown && st.Code() != codes.Internal {
+		httpCode := runtime.HTTPStatusFromCode(st.Code())
+		trailerErr := grpc.SetTrailer(ctx, metadata.Pairs("x-http-code", fmt.Sprintf("%d", httpCode)))
+		if trailerErr != nil {
+			s.Debugf("error setting x-http-code to trailer: %v", trailerErr)
+		}
+		s.Warnw("grpc status error", "error", err.Error(), "grpc_code", st.Code().String(), "http_code", httpCode)
+		return &common.StatusResponse{
+			Status:  common.StatusCode_FAILED,
+			Message: st.Message(),
+		}
+	}
+
 	trailerErr := grpc.SetTrailer(ctx, metadata.Pairs("x-http-code", fmt.Sprintf("%d", http.StatusInternalServerError)))
 	if trailerErr != nil {
 		s.Debugf("error setting x-http-code to trailer: %v", trailerErr)
