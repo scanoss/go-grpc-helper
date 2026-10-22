@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [0.17.0] - 2026-10-16
+## [0.17.0] - 2026-10-22
 ### Fixed
 - Gateway errors that never reach the service (e.g. a request body that is not valid JSON) were answered with HTTP 200 and an empty body; they now get the matching status code and a JSON error body
 - `ResponseInterceptor` answered every non-`ResponseError` with HTTP 500; a gRPC status error now maps to its HTTP equivalent (e.g. `Unimplemented` → 501, `InvalidArgument` → 400, `NotFound` → 404). `Unknown` and `Internal` still answer 500 with the generic message
