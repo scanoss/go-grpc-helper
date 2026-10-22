@@ -21,3 +21,7 @@ jobs:
 
       - name: golangci-lint
         uses: golangci/golangci-lint-action@v9
+        with:
+          # Pinned, as in the services that consume this library: 2.15.0 renamed the
+          # exhaustive "map" check and rejects this repo's config before linting.
+          version: v2.10.1
