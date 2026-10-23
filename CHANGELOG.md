@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.17.0] - 2026-10-22
+### Fixed
+- Gateway errors that never reach the service (e.g. a request body that is not valid JSON) were answered with HTTP 200 and an empty body; they now get the matching status code and a JSON error body
+- `ResponseInterceptor` answered every non-`ResponseError` with HTTP 500; a gRPC status error now maps to its HTTP equivalent (e.g. `Unimplemented` → 501, `InvalidArgument` → 400, `NotFound` → 404). `Unknown` and `Internal` still answer 500 with the generic message
+
 ## [0.16.0] - 2026-06-22
 ### Added
 - Added `RegisterHealthEndpoint` to register a GET `/health` liveness route on the grpc-gateway mux
@@ -139,3 +144,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [0.14.0]: https://github.com/scanoss/go-grpc-helper/compare/v0.13.0...v0.14.0
 [0.15.0]: https://github.com/scanoss/go-grpc-helper/compare/v0.14.0...v0.15.0
 [0.15.1]: https://github.com/scanoss/go-grpc-helper/compare/v0.15.0...v0.15.1
+[0.16.0]: https://github.com/scanoss/go-grpc-helper/compare/v0.15.1...v0.16.0
+[0.17.0]: https://github.com/scanoss/go-grpc-helper/compare/v0.16.0...v0.17.0

@@ -166,6 +166,12 @@ func httpErrorResponseModifier(ctx context.Context, mux *runtime.ServeMux, marsh
 		fmt.Printf("httpResponseModifier: Setting HTTP status code: %d\n", code)
 		w.WriteHeader(code)
 	} else {
+		// No trailer means the error never reached the service's response
+		// interceptor: grpc-gateway rejected the request itself, typically a body
+		// that is not valid JSON. Writing nothing here sent those back as HTTP 200
+		// with an empty body. The default handler answers with the status code that
+		// matches the error (400 for a malformed body) and a JSON error body.
 		fmt.Printf("httpResponseModifier: No x-http-code header found\n")
+		runtime.DefaultHTTPErrorHandler(ctx, mux, marshaler, w, r, err)
 	}
 }
